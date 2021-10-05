@@ -75,7 +75,14 @@ class ClimatologyMapWoa(AnalysisTask):  # {{{
               'titleName': 'Salinity',
               'obsFieldName': 's_an',
               'obsANNFileName': 'woa18_decav_04_TS_ann_20190829.nc',
-              'obsMONFileName': 'woa18_decav_04_TS_mon_20190829.nc'}]
+              'obsMONFileName': 'woa18_decav_04_TS_mon_20190829.nc'},
+             {'prefix': 'dissolvedOxygen',
+              'mpas': 'timeMonthly_avg_ecosysTracers_O2',
+              'units': r'mmol O2 m^{-3}',
+              'titleName': 'Dissolved Oxygen',
+              'obsFieldName': 'o_an',
+              'obsANNFileName': 'woa18_all_o00_01_ann_20211005.nc',
+              'obsMONFileName': 'woa18_all_o00_01_mon_20211005.nc'}]
 
         tags = ['climatology', 'horizontalMap', 'woa', 'publicObs'] + \
             [field['prefix'] for field in fields]
