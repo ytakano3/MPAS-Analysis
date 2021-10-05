@@ -66,12 +66,16 @@ class ClimatologyMapWoa(AnalysisTask):  # {{{
               'mpas': 'timeMonthly_avg_activeTracers_temperature',
               'units': r'$\degree$C',
               'titleName': 'Potential Temperature',
-              'obsFieldName': 't_an'},
+              'obsFieldName': 't_an',
+              'obsANNFileName': 'woa18_decav_04_TS_ann_20190829.nc',
+              'obsMONFileName': 'woa18_decav_04_TS_mon_20190829.nc'},
              {'prefix': 'salinity',
               'mpas': 'timeMonthly_avg_activeTracers_salinity',
               'units': r'PSU',
               'titleName': 'Salinity',
-              'obsFieldName': 's_an'}]
+              'obsFieldName': 's_an',
+              'obsANNFileName': 'woa18_decav_04_TS_ann_20190829.nc',
+              'obsMONFileName': 'woa18_decav_04_TS_mon_20190829.nc'}]
 
         tags = ['climatology', 'horizontalMap', 'woa', 'publicObs'] + \
             [field['prefix'] for field in fields]
@@ -146,8 +150,7 @@ class ClimatologyMapWoa(AnalysisTask):  # {{{
 
             if 'ANN' in seasons:
                 obsFileName = \
-                    '{}/woa18_decav_04_TS_ann_20190829.nc'.format(
-                        observationsDirectory)
+                    os.path.join(observationsDirectory, field['obsANNFileName'])
                 remapAnnObsSubtask = RemapWoaClimatology(
                     parentTask=self, seasons=['ANN'],
                     fileName=obsFileName,
@@ -163,8 +166,7 @@ class ClimatologyMapWoa(AnalysisTask):  # {{{
                 seasonsMinusAnn.remove('ANN')
             if len(seasonsMinusAnn) > 0:
                 obsFileName = \
-                    '{}/woa18_decav_04_TS_mon_20190829.nc'.format(
-                        observationsDirectory)
+                    os.path.join(observationsDirectory, field['obsMONFileName'])
                 remapMonObsSubtask = RemapWoaClimatology(
                         parentTask=self, seasons=seasonsMinusAnn,
                         fileName=obsFileName,
