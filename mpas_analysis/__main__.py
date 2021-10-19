@@ -783,6 +783,9 @@ def main():
                         action='store_true',
                         help="Include config options for analysis focused on "
                              "polar regions")
+    parser.add_argument("--bgc", dest="bgc", action='store_true',
+                        help="Include config options for analysis focused on "
+                             "BGC")
     args = parser.parse_args()
 
     if len(sys.argv) == 1:
@@ -824,7 +827,9 @@ def main():
     if args.polar_regions:
         with path('mpas_analysis', 'polar_regions.cfg') as polar_config:
             shared_configs.append(str(polar_config))
-
+    if args.bgc:
+        with path('mpas_analysis', 'bgc.cfg') as bgc_config:
+            shared_configs.append(str(bgc_config))
     main_configs = shared_configs + args.config_files
 
     config = MpasAnalysisConfigParser(
