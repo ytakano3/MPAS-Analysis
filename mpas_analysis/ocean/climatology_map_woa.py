@@ -20,6 +20,8 @@ import xarray as xr
 import numpy as np
 from pyremap import LatLonGridDescriptor
 
+import os
+
 from mpas_analysis.shared import AnalysisTask
 
 from mpas_analysis.ocean.remap_depth_slices_subtask import \
@@ -81,10 +83,10 @@ class ClimatologyMapWoa(AnalysisTask):  # {{{
               'units': r'mmol O2 m^{-3}',
               'titleName': 'Dissolved Oxygen',
               'obsFieldName': 'o_an',
-              'obsANNFileName': 'woa18_all_o00_01_ann_20211005.nc',
-              'obsMONFileName': 'woa18_all_o00_01_mon_20211005.nc'}]
+              'obsANNFileName': 'woa18_all_o00_01_ann_20211019.nc',
+              'obsMONFileName': 'woa18_all_o00_01_mon_20211019.nc'}]
 
-        tags = ['climatology', 'horizontalMap', 'woa', 'publicObs'] + \
+        tags = ['climatology', 'horizontalMap', 'woa', 'publicObs', 'bgc'] + \
             [field['prefix'] for field in fields]
 
         # call the constructor from the base class (AnalysisTask)
@@ -145,47 +147,47 @@ class ClimatologyMapWoa(AnalysisTask):  # {{{
         remapAnnObsSubtask = None
         remapMonObsSubtask = None
 
-        if controlConfig is None:
-            # Since we have a WOA18 annual climatology file and
-            # another file containing the 12 WOA18 monthly climatologies,
-            # do the remapping for each season separately
+        for field in fields:
+            if controlConfig is None:
+                # Since we have a WOA18 annual climatology file and
+                # another file containing the 12 WOA18 monthly climatologies,
+                # do the remapping for each season separately
 
-            observationsDirectory = build_obs_path(
-                    config, 'ocean', 'woa18Subdirectory')
+                observationsDirectory = build_obs_path(
+                        config, 'ocean', 'woa18Subdirectory')
 
-            refFieldNames = [field['obsFieldName'] for field in fields]
-
-            if 'ANN' in seasons:
-                obsFileName = \
-                    os.path.join(observationsDirectory, field['obsANNFileName'])
-                remapAnnObsSubtask = RemapWoaClimatology(
-                    parentTask=self, seasons=['ANN'],
-                    fileName=obsFileName,
-                    outFilePrefix='woa18_ann',
-                    fieldNames=refFieldNames,
-                    depths=depths,
-                    comparisonGridNames=comparisonGridNames,
-                    subtaskName='remapObservationsAnn')
-                self.add_subtask(remapAnnObsSubtask)
-
-            seasonsMinusAnn = list(seasons)
-            if 'ANN' in seasonsMinusAnn:
-                seasonsMinusAnn.remove('ANN')
-            if len(seasonsMinusAnn) > 0:
-                obsFileName = \
-                    os.path.join(observationsDirectory, field['obsMONFileName'])
-                remapMonObsSubtask = RemapWoaClimatology(
-                        parentTask=self, seasons=seasonsMinusAnn,
+                refFieldName = field['obsFieldName']
+                field_name = field['prefix']
+                if 'ANN' in seasons:
+                    obsFileName = \
+                        os.path.join(observationsDirectory, field['obsANNFileName'])
+                    remapAnnObsSubtask = RemapWoaClimatology(
+                        parentTask=self, seasons=['ANN'],
                         fileName=obsFileName,
-                        outFilePrefix='woa18_mon',
-                        fieldNames=refFieldNames,
+                        outFilePrefix=f'woa18_ann_{field_name}',
+                        fieldNames=[refFieldName],
                         depths=depths,
                         comparisonGridNames=comparisonGridNames,
-                        subtaskName='remapObservationsMon')
+                        subtaskName=f'remap_observations_ann_{field_name}')
+                    self.add_subtask(remapAnnObsSubtask)
+    
+                seasonsMinusAnn = list(seasons)
+                if 'ANN' in seasonsMinusAnn:
+                    seasonsMinusAnn.remove('ANN')
+                if len(seasonsMinusAnn) > 0:
+                    obsFileName = \
+                        os.path.join(observationsDirectory, field['obsMONFileName'])
+                    remapMonObsSubtask = RemapWoaClimatology(
+                            parentTask=self, seasons=seasonsMinusAnn,
+                            fileName=obsFileName,
+                            outFilePrefix=f'woa18_mon_{field_name}',
+                            fieldNames=[refFieldName],
+                            depths=depths,
+                            comparisonGridNames=comparisonGridNames,
+                            subtaskName=f'remap_observations_mon_{field_name}')
+    
+                    self.add_subtask(remapMonObsSubtask)
 
-                self.add_subtask(remapMonObsSubtask)
-
-        for field in fields:
             fieldPrefix = field['prefix']
             upperFieldPrefix = fieldPrefix[0].upper() + fieldPrefix[1:]
             sectionName = '{}{}'.format(self.taskName, upperFieldPrefix)
