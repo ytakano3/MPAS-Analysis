@@ -116,7 +116,7 @@
 
   <observation>
     <name>
-      WOA18 Temperature and Salinity Climatology
+      WOA18 Temperature, Salinity, and BGC Climatology
     </name>
     <component>
       ocean
@@ -145,10 +145,18 @@
       Volume 1: Temperature. A. Mishonov Technical Editor, NOAA Atlas NESDIS 81.
       Zweng and co-authors, 2019: World Ocean Atlas 2018, Volume 2: Salinity.
       A. Mishonov Technical Editor, NOAA Atlas NESDIS 82.
+      Garcia and co-authors, 2018. World Ocean Atlas 2018, Volume 3: 
+      Dissolved Oxygen, Apparent Oxygen Utilization, and Oxygen Saturation. 
+      A. Mishonov Technical Ed.; NOAA Atlas NESDIS 83, 38pp.
+      Garcia and co-authors, 2018. World Ocean Atlas 2018, Volume 4: 
+      Dissolved Inorganic Nutrients (phosphate, nitrate and nitrate+nitrite, silicate).
+      A. Mishonov Technical Ed.; NOAA Atlas NESDIS 84, 35pp.
     </releasePolicy>
     <references>
       - [Locarnini et al. (2019)](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18_vol1.pdf)
       - [Zweng et al. (2019)](https://data.nodc.noaa.gov/woa/WOA18/DOC/woa18_vol2.pdf)
+      - [Garcia et al. (2019)](https://www.ncei.noaa.gov/sites/default/files/2020-04/woa18_vol3.pdf)
+      - [Garcia et al. (2019)](https://www.ncei.noaa.gov/sites/default/files/2020-04/woa18_vol4.pdf)
     </references>
     <bibtex>
       @manual{Locarninietal2019,
@@ -169,6 +177,24 @@
       year = {2019},
       edition = {A. Mishonov Technical Editor}
       }
+      @manual{Garciaetal2019a,
+      H. E. Garcia and K. Weathers and C. R. Paver and I. Smolyar and T. P. Boyer 
+      and  R. A. Locarnini and M. M. Zweng and  A. V. Mishonov and O. K. Baranova 
+      and D. Seidov and J. R. Reagan},
+      title = {World Ocean Atlas 2018, Volume 3: Oxygen},
+      organization = {NOAA Atlas NESDIS 83},
+      year = {2019},
+      edition = {A. Mishonov Technical Editor}
+      }
+      @manual{Garciaetal2019b,
+      H. E. Garcia and K. Weathers and C. R. Paver and I. Smolyar and T. P. Boyer
+      and  R. A. Locarnini and M. M. Zweng and  A. V. Mishonov and O. K. Baranova
+      and D. Seidov and J. R. Reagan},
+      title = {World Ocean Atlas 2018, Volume 4: Nutrients},
+      organization = {NOAA Atlas NESDIS 84},
+      year = {2019},
+      edition = {A. Mishonov Technical Editor}
+      }
     </bibtex>
     <dataUrls>
       - https://data.nodc.noaa.gov/woa/WOA18/DATA/
@@ -176,6 +202,7 @@
     <preprocessing>
       - preprocess_observations/preprocess_WOA18Annual_data.bash
       - preprocess_observations/preprocess_WOA18Monthly_data.bash
+      - preprocess_observations/preprocess_WOA18Monthly_BGCdata.sh
     </preprocessing>
     <tasks>
       - climatologyMapWoa
@@ -184,7 +211,7 @@
       Ocean/WOA18
     </subdirectory>
     <nameInDocs>
-      woa18_t_s
+      woa18_t_s_bgc
     </nameInDocs>
   </observation>
 
