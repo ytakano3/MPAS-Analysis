@@ -120,8 +120,11 @@ class ClimatologyMapBGC(AnalysisTask):  # {{{
             # them to total chlorophyll
             if fieldName == 'Chl':
                 prefix = 'timeMonthly_avg_ecosysTracers_'
+                # Temporal removement of phaeoChl for MARBL compatibility
+                #variableList = [prefix + 'spChl', prefix + 'diatChl',
+                #                prefix + 'diazChl', prefix + 'phaeoChl']
                 variableList = [prefix + 'spChl', prefix + 'diatChl',
-                                prefix + 'diazChl', prefix + 'phaeoChl']
+                                prefix + 'diazChl']
                 plotField = 'Chl'
             else:
                 variableList = [mpasFieldName]
@@ -272,14 +275,16 @@ class RemapBGCClimatology(RemapMpasClimatologySubtask):  # {{{
             spChl = climatology.timeMonthly_avg_ecosysTracers_spChl
             diatChl = climatology.timeMonthly_avg_ecosysTracers_diatChl
             diazChl = climatology.timeMonthly_avg_ecosysTracers_diazChl
-            phaeoChl = climatology.timeMonthly_avg_ecosysTracers_phaeoChl
-            climatology['Chl'] = spChl + diatChl + diazChl + phaeoChl
+            # Temporal removement of phaeoChl for MARBL compatibility
+            #phaeoChl = climatology.timeMonthly_avg_ecosysTracers_phaeoChl
+            #climatology['Chl'] = spChl + diatChl + diazChl + phaeoChl
+            climatology['Chl'] = spChl + diatChl + diazChl
             climatology.Chl.attrs['units'] = 'mg m$^{-3}$'
             climatology.Chl.attrs['description'] = 'Sum of all PFT chlorophyll'
             climatology.drop_vars(['timeMonthly_avg_ecosysTracers_spChl',
                                    'timeMonthly_avg_ecosysTracers_diatChl',
-                                   'timeMonthly_avg_ecosysTracers_diazChl',
-                                   'timeMonthly_avg_ecosysTracers_phaeoChl'])
+                                   'timeMonthly_avg_ecosysTracers_diazChl'])
+            #                       'timeMonthly_avg_ecosysTracers_phaeoChl'])
 
         return climatology  # }}}
 
